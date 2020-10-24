@@ -1,0 +1,4 @@
+{
+    "python.pythonPath": "/Users/tbeck202/.local/share/virtualenvs/BracketBuilder-JelyTZv7/bin/python",
+    "python.linting.pylintArgs": ["--load-plugins", "pylint-flask", "pylint-flask-sqlalchemy"]
+}

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Bracket Maker</title>
+{% endblock %}
+
+{% block body %}
+<h2>Edit Movie</h2>
+
+<form action="/update/{{movie.id}}" method="post">
+    <input type="text" name="title" id="title" value="{{movie.title}}">
+    <input type="submit" value="Submit Change">
+</form>
+{% endblock %}
