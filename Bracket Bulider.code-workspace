@@ -4,5 +4,15 @@
 			"path": "."
 		}
     ],
-    "settings": {}
+    "settings": {
+        "sqltools.connections": [
+            {
+                "previewLimit": 50,
+                "driver": "SQLite",
+                "name": "bracket_builder",
+                "database": "${workspaceFolder:BracketBuilder}/bracket_builder.db"
+            }
+        ],
+        "sqltools.useNodeRuntime": true
+    }
 }

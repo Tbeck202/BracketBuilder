@@ -1,5 +1,6 @@
 import random
 import math
+import time
 
 
 movie_pool = ['D2: The Mighty Ducks', 'D2: The Mighty Ducks', 'D2: The Mighty Ducks', 'D2: The Mighty Ducks',
@@ -70,5 +71,9 @@ while count < 32:
 
 
 print(len(bracket))
+cnt = 1
 for movie in bracket:
-    print(movie)
+    print(f"{cnt}:{movie}")
+    if cnt % 2 == 0:
+        time.sleep(10)
+    cnt += 1

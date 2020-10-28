@@ -9,7 +9,8 @@ Base = declarative_base()
 
 # --------------INIT APP----------------------------------------------------------------------------
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///bracekt_builder.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///bracket_builder.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 # --------------MODELS----------------------------------------------------------------------------
@@ -19,14 +20,13 @@ class Bracket(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     theme = db.Column(db.String(500), nullable=False)
     size = db.Column(db.Integer, nullable=False)
-    pool = relationship("Pool", uselist=False, back_populates="bracket")
+    pool = db.relationship("Pool", backref="bracket")
 
 
 class Pool(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     movie = db.Column(db.String(200), nullable=False)
-    bracket_id = Column(Integer, ForeignKey('bracket.id'))
-    bracket = relationship("Bracket", back_populates="pool")
+    bracket_id = db.Column(db.Integer, db.ForeignKey('bracket.id'))
 # --------------ROUTES----------------------------------------------------------------------------
 
 # Index route / add movies to pool
@@ -37,19 +37,18 @@ class Pool(db.Model):
 @app.route('/', methods=['POST', 'GET'])
 def index():
     if request.method == 'POST':
-        movie_title = request.form['movie']
-        new_movie = Pool(movie=movie_title)
+        bracket_theme = request.form['theme']
+        bracket_size = request.form['size']
+        new_bracket = Bracket(theme=bracket_theme, size=bracket_size)
         try:
-            Pool.session.add(new_movie)
-            Pool.session.commit()
+            db.session.add(new_bracket)
+            db.session.commit()
             return redirect('/')
         except:
-            return f"Something went wrong adding {new_movie.movie}"
+            return f"Something went wrong adding {new_bracket.theme}"
     else:
-        # movies = Bracket.query(Bracket.pool).all()
-        # movies = Bracket.query.order_by(Bracket.pool.id).all()
-        movies = Pool.query.order_by(Pool.id).all()
-        return render_template('index.html', movies=movies)
+        brackets = Bracket.query.order_by(Bracket.id).all()
+        return render_template('index.html', brackets=brackets)
 
 # Deleting movies from the pool
 
