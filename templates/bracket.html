@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>{{bracket.theme}}</title>
+{% endblock %}
+
+{% block body %}
+<h1>{{bracket.theme}}</h1>
+
+{% if bracket.pool|length < bracket.size %}
+<h2>Add {{ bracket.size - bracket.pool|length }} more movies to the pool</h2>
+<form action="/bracket/pool" method="post">
+    <input type="text" name="movie" id="movie">
+    <input type="hidden" name="id" id="id" value="{{bracket.id}}">
+    <input type="submit" value="Submit">
+</form>
+{% endif %}
+<!-- 
+ ██████   ██████   ██████  ██          ██████  ██ ███████ ██████  ██       █████  ██    ██ 
+██   ██ ██    ██ ██    ██ ██          ██   ██ ██ ██      ██   ██ ██      ██   ██  ██  ██  
+██████  ██    ██ ██    ██ ██          ██   ██ ██ ███████ ██████  ██      ███████   ████   
+██      ██    ██ ██    ██ ██          ██   ██ ██      ██ ██      ██      ██   ██    ██    
+██       ██████   ██████  ███████     ██████  ██ ███████ ██      ███████ ██   ██    ██     
+ -->                                                                                     
+{% if bracket.pool|length >= 1  %}
+    {% for movie in bracket.pool %}
+        <p>{{ movie.movie}}</p>
+    {% endfor %}
+{% else %}
+    <h2>No movies in the pool</h2>
+{% endif %}
+<!-- ================================================================================== -->
+
+<a href="/bracket/delete/{{ bracket.id }}">Delete Bracket</a>
+
+
+
+
+
+{% endblock %}

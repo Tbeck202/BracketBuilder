@@ -34,10 +34,10 @@ h2 {
 	margin: auto;
 }
 
-a {
+/* a {
 	text-decoration: none;
 	font-size: .6em;
-}
+} */
 
 .form-container {
 	display: flex;

@@ -27,11 +27,9 @@ class Pool(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     movie = db.Column(db.String(200), nullable=False)
     bracket_id = db.Column(db.Integer, db.ForeignKey('bracket.id'))
-# --------------ROUTES----------------------------------------------------------------------------
+# --------------ROUTES-----------------------------------------------------------------------------
 
-# Index route / add movies to pool
-# NEED TO FIGURE OUT HOW TO CONNECT THE DB'S AND IN WHAT ORDER
-# SOMETHING TO DO WITH SESSION???
+# Index route / create bracket
 
 
 @app.route('/', methods=['POST', 'GET'])
@@ -43,12 +41,50 @@ def index():
         try:
             db.session.add(new_bracket)
             db.session.commit()
-            return redirect('/')
+            return redirect(f'/bracket/{new_bracket.id}')
         except:
             return f"Something went wrong adding {new_bracket.theme}"
     else:
         brackets = Bracket.query.order_by(Bracket.id).all()
         return render_template('index.html', brackets=brackets)
+
+# Add movie to pool
+
+
+@app.route('/bracket/pool', methods=['POST'])
+def add_movie():
+    movie = request.form['movie']
+    movie_bracket_id = request.form['id']
+    new_movie = Pool(movie=movie, bracket_id=movie_bracket_id)
+
+    try:
+        db.session.add(new_movie)
+        db.session.commit()
+        return redirect(f'/bracket/{new_movie.bracket_id}')
+    except:
+        return f"Something went wrong adding {new_movie.theme}"
+
+# view bracket
+
+
+@app.route('/bracket/<int:id>', methods=['GET'])
+def view_bracket(id):
+    show_bracket = Bracket.query.get_or_404(id)
+    return render_template('bracket.html', bracket=show_bracket)
+
+# Delete Bracket
+
+
+@app.route('/bracket/delete/<int:id>')
+def delete_bracket(id):
+    bracket_to_delete = Bracket.query.get_or_404(id)
+
+    try:
+        db.session.delete(bracket_to_delete)
+        db.session.commit()
+        return redirect('/')
+    except:
+        return f"Sorry, we couldn't delete the {bracket_to_delete.theme} bracket"
 
 # Deleting movies from the pool
 

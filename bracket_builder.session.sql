@@ -1,2 +1,2 @@
 SELECT *
-FROM bracket
+FROM pool

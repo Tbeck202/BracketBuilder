@@ -9,7 +9,7 @@
 
     <h2>Create a bracket!</h2>
     {% for bracket in brackets %}
-    <h3 class="movie">{{ bracket.theme }}</h3>
+    <a href="/bracket/{{ bracket.id }}">{{ bracket.theme }}</a>
     {% endfor %}
 <div class="form-container">
     <form action="/" method="post">
