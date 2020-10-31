@@ -23,6 +23,9 @@ class Bracket(db.Model):
     theme = db.Column(db.String(500), nullable=False)
     size = db.Column(db.Integer, nullable=False)
     pool_size = db.Column(db.Integer, nullable=False)
+    filled_out = show_bracket = db.Column(
+        db.Boolean, default=False, nullable=False)
+    show_bracket = db.Column(db.Boolean, default=False, nullable=False)
     pool = db.relationship("Movie", backref="bracket")
 
 
@@ -31,6 +34,7 @@ class Movie(db.Model):
     title = db.Column(db.String(200), nullable=False)
     votes = db.Column(db.Integer, nullable=False)
     in_bracket = db.Column(db.Boolean, default=False, nullable=False)
+    bracket_order = db.Column(db.Integer, nullable=True)
     bracket_id = db.Column(db.Integer, db.ForeignKey('bracket.id'))
 
 
@@ -83,8 +87,8 @@ def add_movies():
 
     randomized_pool = movie_pool[:]
     shuffle(randomized_pool)
-    for m in randomized_pool:
-        print(m.title)
+    # for m in randomized_pool:
+    #     print(m.title)
     cnt = 1
     while cnt <= bracket_size:
         idx = randint(0, len(randomized_pool)-1)
@@ -96,10 +100,16 @@ def add_movies():
             set_movie = db.session.query(Movie).filter(
                 Movie.id == pick.id).one()
             set_movie.in_bracket = True
+            set_movie.bracket_order = cnt
             cnt += 1
             db.session.commit()
+            set_bracket = db.session.query(Bracket).filter(
+                Bracket.id == movie_bracket_id).one()
+            set_bracket.filled_out = True
+            db.session.commit()
 
-    return redirect(f'/bracket/{new_movie.bracket_id}')
+    # return redirect(f'/bracket/{new_movie.bracket_id}')
+    return redirect(f'/bracket/{movie_bracket_id}')
 
 # view bracket
 

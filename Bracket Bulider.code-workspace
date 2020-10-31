@@ -17,6 +17,18 @@
                 "driver": "SQLite",
                 "name": "Bracket",
                 "database": "${workspaceFolder:BracketBuilder}/bracket_builder.db"
+            },
+            {
+                "previewLimit": 50,
+                "driver": "SQLite",
+                "name": "BBuilder",
+                "database": "${workspaceFolder:BracketBuilder}/bracket_builder.db"
+            },
+            {
+                "previewLimit": 50,
+                "driver": "SQLite",
+                "name": "Bracket Builder",
+                "database": "${workspaceFolder:BracketBuilder}/bracket_builder.db"
             }
         ],
         "sqltools.useNodeRuntime": true

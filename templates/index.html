@@ -5,12 +5,20 @@
 {% endblock %}
 
 {% block body %}
+<h1>Three Films and a Podcast: Bracket Builder</h1>
+{% if brackets|length >= 1 %}
+<ul>
+    {% for bracket in brackets %}
+    <li><a href="/bracket/{{ bracket.id }}">{{ bracket.theme }}</a></li>
+    {% endfor %}
+</ul>
+{% else %}
+<h2>There are no brackets created yet!</h2>
+{% endif %}
 <div class="movie-pool">
 
-    <h2>Create a bracket!</h2>
-    {% for bracket in brackets %}
-    <a href="/bracket/{{ bracket.id }}">{{ bracket.theme }}</a>
-    {% endfor %}
+<h2>Create a bracket!</h2>
+    
 <div class="form-container">
     <form action="/" method="post">
         <div  style="border: 1px solid red; margin: 5px; width: 50%;">

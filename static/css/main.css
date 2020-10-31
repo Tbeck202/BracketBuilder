@@ -30,6 +30,11 @@ body {
 	justify-content: center;
 }
 
+h1 {
+	display: flex;
+	margin: 0 auto;
+}
+
 h2 {
 	margin: auto;
 }
@@ -43,6 +48,24 @@ h2 {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+}
+
+.bracket-container {
+	width: 50%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: flex-start;
+	border: 1px solid black;
+}
+
+.matchup-container {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+	width: 200px;
+	margin: 10px;
 }
 
 form {
