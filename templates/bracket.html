@@ -5,16 +5,29 @@
 {% endblock %}
 
 {% block body %}
+
+<a href="/">Home</a>
+
 <h1>{{bracket.theme}}</h1>
 
-{% if bracket.pool|length < bracket.size %}
-<h2>Add {{ bracket.size - bracket.pool|length }} more movies to the pool</h2>
+
+<h2>Add {{ bracket.pool_size }} movies to the pool</h2>
 <form action="/bracket/pool" method="post">
-    <input type="text" name="movie" id="movie">
+    {% for i in range(1, bracket.pool_size + 1) %}
+        <div style="border: 1px solid red; margin: 5px; width: 50%;">
+            <label for="movie{{i}}">Movie {{i}}</label>
+            <input type="text" name="movie{{i}}" id="movie{{i}}">
+            <label for="votes{{i}}">How many votes for this movie?</label>
+            <input type="number" name="votes{{i}}" id="votes{{i}}">
+        </div>
+    {% endfor %}
     <input type="hidden" name="id" id="id" value="{{bracket.id}}">
+    <input type="hidden" name="size" id="size" value="{{bracket.size}}">
+    <input type="hidden" name="pool_size" id="pool_size" value="{{bracket.pool_size}}">
     <input type="submit" value="Submit">
 </form>
-{% endif %}
+
+
 <!-- 
  ██████   ██████   ██████  ██          ██████  ██ ███████ ██████  ██       █████  ██    ██ 
 ██   ██ ██    ██ ██    ██ ██          ██   ██ ██ ██      ██   ██ ██      ██   ██  ██  ██  
@@ -24,7 +37,9 @@
  -->                                                                                     
 {% if bracket.pool|length >= 1  %}
     {% for movie in bracket.pool %}
-        <p>{{ movie.movie}}</p>
+        {% if movie.in_bracket %}
+        <p>{{ movie.title}} has {{movie.votes}} votes</p>
+        {% endif %}
     {% endfor %}
 {% else %}
     <h2>No movies in the pool</h2>

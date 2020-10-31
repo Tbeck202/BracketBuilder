@@ -13,8 +13,18 @@
     {% endfor %}
 <div class="form-container">
     <form action="/" method="post">
-        <input type="text" name="theme" id="theme">
-        <input type="number" name="size" id="size" step="2">
+        <div  style="border: 1px solid red; margin: 5px; width: 50%;">
+            <label for="theme">Bracket Theme</label>
+            <input type="text" name="theme" id="theme">
+        </div>
+        <div style="border: 1px solid red; margin: 5px; width: 50%;">
+            <label for="size">How big is the bracket?</label>
+            <input type="number" name="size" id="size" step="2" min="2">
+        </div>
+        <div style="border: 1px solid red; margin: 5px; width: 50%;">
+            <label for="">How many movies in the pool?</label>
+            <input type="number" name="pool_size" id="pool_size" step="1" min="1">
+        </div>
         <input type="submit" value="Create Bracket">
     </form>
 </div>

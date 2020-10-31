@@ -9,7 +9,13 @@
             {
                 "previewLimit": 50,
                 "driver": "SQLite",
-                "name": "bracket_builder",
+                "name": "Bracket Builder",
+                "database": "${workspaceFolder:BracketBuilder}/bracket_builder.db"
+            },
+            {
+                "previewLimit": 50,
+                "driver": "SQLite",
+                "name": "Bracket",
                 "database": "${workspaceFolder:BracketBuilder}/bracket_builder.db"
             }
         ],

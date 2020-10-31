@@ -1,4 +1,6 @@
 import os
+from random import shuffle
+from random import randint
 from flask import Flask, render_template, request, url_for, redirect
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Table, Column, Integer, ForeignKey
@@ -20,16 +22,21 @@ class Bracket(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     theme = db.Column(db.String(500), nullable=False)
     size = db.Column(db.Integer, nullable=False)
-    pool = db.relationship("Pool", backref="bracket")
+    pool_size = db.Column(db.Integer, nullable=False)
+    pool = db.relationship("Movie", backref="bracket")
 
 
-class Pool(db.Model):
+class Movie(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    movie = db.Column(db.String(200), nullable=False)
+    title = db.Column(db.String(200), nullable=False)
+    votes = db.Column(db.Integer, nullable=False)
+    in_bracket = db.Column(db.Boolean, default=False, nullable=False)
     bracket_id = db.Column(db.Integer, db.ForeignKey('bracket.id'))
+
+
 # --------------ROUTES-----------------------------------------------------------------------------
 
-# Index route / create bracket
+    # Index route / create bracket
 
 
 @app.route('/', methods=['POST', 'GET'])
@@ -37,7 +44,9 @@ def index():
     if request.method == 'POST':
         bracket_theme = request.form['theme']
         bracket_size = request.form['size']
-        new_bracket = Bracket(theme=bracket_theme, size=bracket_size)
+        size_of_pool = request.form['pool_size']
+        new_bracket = Bracket(theme=bracket_theme,
+                              pool_size=size_of_pool, size=bracket_size)
         try:
             db.session.add(new_bracket)
             db.session.commit()
@@ -52,17 +61,45 @@ def index():
 
 
 @app.route('/bracket/pool', methods=['POST'])
-def add_movie():
-    movie = request.form['movie']
-    movie_bracket_id = request.form['id']
-    new_movie = Pool(movie=movie, bracket_id=movie_bracket_id)
+def add_movies():
+    pool_size = int(request.form['pool_size'])
+    bracket_size = int(request.form['size'])
 
-    try:
-        db.session.add(new_movie)
-        db.session.commit()
-        return redirect(f'/bracket/{new_movie.bracket_id}')
-    except:
-        return f"Something went wrong adding {new_movie.theme}"
+    movie_pool = []
+    for m in range(1, pool_size + 1):
+        movie_title = request.form[f'movie{m}']
+        movie_bracket_id = request.form['id']
+        movie_votes = int(request.form[f"votes{m}"])
+        new_movie = Movie(title=movie_title, votes=movie_votes,
+                          bracket_id=movie_bracket_id)
+        for i in range(new_movie.votes):
+            movie_pool.append(new_movie)
+
+        try:
+            db.session.add(new_movie)
+            db.session.commit()
+        except:
+            return f"Something went wrong adding {new_movie.title}"
+
+    randomized_pool = movie_pool[:]
+    shuffle(randomized_pool)
+    for m in randomized_pool:
+        print(m.title)
+    cnt = 1
+    while cnt <= bracket_size:
+        idx = randint(0, len(randomized_pool)-1)
+        pick = randomized_pool[idx]
+        if pick.in_bracket:
+            continue
+        else:
+            # set_movie = Movie.query.get_or_404(pick.id)
+            set_movie = db.session.query(Movie).filter(
+                Movie.id == pick.id).one()
+            set_movie.in_bracket = True
+            cnt += 1
+            db.session.commit()
+
+    return redirect(f'/bracket/{new_movie.bracket_id}')
 
 # view bracket
 
@@ -91,7 +128,7 @@ def delete_bracket(id):
 
 @app.route('/delete/<int:id>')
 def delete(id):
-    movie_to_del = Pool.query.get_or_404(id)
+    movie_to_del = Movie.query.get_or_404(id)
 
     try:
         db.session.delete(movie_to_del)
@@ -105,7 +142,7 @@ def delete(id):
 
 @app.route('/update/<int:id>', methods=['GET', 'POST'])
 def update(id):
-    movie = Pool.query.get_or_404(id)
+    movie = Movie.query.get_or_404(id)
     if request.method == 'POST':
         movie.title = request.form['title']
 
