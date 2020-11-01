@@ -8,7 +8,7 @@
 <h1>Three Films and a Podcast: Bracket Builder</h1>
 {% if brackets|length >= 1 %}
 <ul>
-    {% for bracket in brackets %}
+    {% for bracket in brackets if bracket.theme %}
     <li><a href="/bracket/{{ bracket.id }}">{{ bracket.theme }}</a></li>
     {% endfor %}
 </ul>

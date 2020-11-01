@@ -18,7 +18,7 @@
             <label for="movie{{i}}">Movie {{i}} title:</label>
             <input type="text" name="movie{{i}}" id="movie{{i}}">
             <label for="votes{{i}}">How many votes for this movie?</label>
-            <input type="number" name="votes{{i}}" id="votes{{i}}">
+            <input type="number" name="votes{{i}}" id="votes{{i}}" size="4" min="1">
         </div>
     {% endfor %}
     <input type="hidden" name="id" id="id" value="{{bracket.id}}">
