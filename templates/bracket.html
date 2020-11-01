@@ -26,6 +26,10 @@
     <input type="hidden" name="pool_size" id="pool_size" value="{{bracket.pool_size}}">
     <input type="submit" value="Submit">
 </form>
+<form action="/bracket/{{bracket.id}}/add-movie" method="post">
+    <input type="hidden" name="id" id="id" value="{{bracket.id}}">
+    <input type="submit" value="Add another movie">
+</form>
 {% endif %}
 
 
@@ -52,13 +56,13 @@
         <div class="matchup-container">
         {% for m in bracket.pool %}
             {% if m.bracket_order == b %}
-            <span>{{m.title}}</span>
+            <span class="matchup-item">{{m.title}}</span>
             {% endif %}
         {% endfor %}
-            <span>vs.</span>
+            <span class="matchup-item">vs.</span>
         {% for m in bracket.pool %}
             {% if m.bracket_order == b + 1 %}
-            <span>{{m.title}}</span>
+            <span class="matchup-item">{{m.title}}</span>
             {% endif %}
         {% endfor %}
         </div>

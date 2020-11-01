@@ -61,7 +61,7 @@ def index():
         brackets = Bracket.query.order_by(Bracket.id).all()
         return render_template('index.html', brackets=brackets)
 
-# Add movie to pool
+# Add movies to pool
 
 
 @app.route('/bracket/pool', methods=['POST'])
@@ -111,6 +111,18 @@ def add_movies():
     # return redirect(f'/bracket/{new_movie.bracket_id}')
     return redirect(f'/bracket/{movie_bracket_id}')
 
+# Add another movie input on bracket page
+
+
+@app.route('/bracket/<int:id>/add-movie', methods=['POST'])
+def add_movie_input(id):
+    bracket_id = request.form['id']
+    # set_bracket = Bracket.query.get_or_404(id)
+    set_bracket = db.session.query(Bracket).filter(
+        Bracket.id == bracket_id).one()
+    set_bracket.pool_size += 1
+    db.session.commit()
+    return redirect(f'/bracket/{bracket_id}')
 # view bracket
 
 

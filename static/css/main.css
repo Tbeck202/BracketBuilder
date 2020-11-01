@@ -57,15 +57,24 @@ h2 {
 	justify-content: center;
 	align-items: flex-start;
 	border: 1px solid black;
+	height: 1000px;
+	flex-wrap: wrap;
 }
 
 .matchup-container {
 	display: flex;
 	flex-direction: column;
 	justify-content: flex-start;
-	align-items: center;
+	align-items: baseline;
 	width: 200px;
 	margin: 10px;
+	padding: 5px;
+	background-color: rgba(95, 158, 160, 0.308);
+}
+
+.matchup-item {
+	margin: 5px;
+	font-size: 0.8em;
 }
 
 form {
