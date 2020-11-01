@@ -2,10 +2,10 @@
 
 ## Main Colors
 
-Pink: #F88484
-Dark Red: #C43737
-Light Blue: #B5E1F4
-Dark Blue: #18628C
+* Pink: #F88484
+* Dark Red: #C43737
+* Light Blue: #B5E1F4
+* Dark Blue: #18628C
 
 ## Fonts
 
