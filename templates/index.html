@@ -15,21 +15,21 @@
 {% else %}
 <h2>There are no brackets created yet!</h2>
 {% endif %}
-<div class="movie-pool">
+<!-- <div class="movie-pool"> -->
 
 <h2>Create a bracket!</h2>
     
 <div class="form-container">
     <form action="/" method="post">
-        <div  style="border: 1px solid red; margin: 5px; width: 50%;">
+        <div  style="border: 1px solid black; margin: 5px; width: 50%;">
             <label for="theme">Bracket Theme</label>
             <input type="text" name="theme" id="theme">
         </div>
-        <div style="border: 1px solid red; margin: 5px; width: 50%;">
+        <div style="border: 1px solid black; margin: 5px; width: 50%;">
             <label for="size">How big is the bracket?</label>
             <input type="number" name="size" id="size" step="2" min="2">
         </div>
-        <div style="border: 1px solid red; margin: 5px; width: 50%;">
+        <div style="border: 1px solid black; margin: 5px; width: 50%;">
             <label for="">How many movies in the pool?</label>
             <input type="number" name="pool_size" id="pool_size" step="1" min="1">
         </div>
