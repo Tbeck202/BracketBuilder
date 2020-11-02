@@ -199,7 +199,7 @@ def update(id):
 
 # --------------RUN SERVER----------------------------------------------------------------------------
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
 
 #GRAVEYARD!!!!
 # {% for i in range(1, bracket.pool_size + 1) %} 
