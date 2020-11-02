@@ -68,29 +68,44 @@ def index():
 def add_movies():
     pool_size = int(request.form['pool_size'])
     bracket_size = int(request.form['size'])
-
-    movie_pool = []
+    bracket_id = request.form['id']
+    
     for m in range(1, pool_size + 1):
         movie_title = request.form[f'movie{m}']
         movie_bracket_id = request.form['id']
         movie_votes = int(request.form[f"votes{m}"])
         new_movie = Movie(title=movie_title, votes=movie_votes,
                           bracket_id=movie_bracket_id)
-        for i in range(new_movie.votes):
-            movie_pool.append(new_movie)
 
         try:
             db.session.add(new_movie)
             db.session.commit()
         except:
             return f"Something went wrong adding {new_movie.title}"
+    return redirect(f'/bracket/{bracket_id}')
 
-    randomized_pool = movie_pool[:]
+
+# Fill out bracket
+
+@app.route('/bracket/set-bracket', methods=['POST'])
+def set_bracket_order():
+    bracket_id = request.form['id']
+    bracket = db.session.query(Bracket).filter(
+        Bracket.id == bracket_id).one()
+    bracket_pool = bracket.pool
+    # for i in range(new_movie.votes):
+    #         movie_pool.append(new_movie)
+
+    randomized_pool = []
+    for m in bracket_pool:
+        for i in range(m.votes):
+            randomized_pool.append(m)
+
     shuffle(randomized_pool)
-    # for m in randomized_pool:
-    #     print(m.title)
+    for m in randomized_pool:
+        print(m.title)
     cnt = 1
-    while cnt <= bracket_size:
+    while cnt <= len(bracket.pool):
         idx = randint(0, len(randomized_pool)-1)
         pick = randomized_pool[idx]
         if pick.in_bracket:
@@ -104,12 +119,12 @@ def add_movies():
             cnt += 1
             db.session.commit()
             set_bracket = db.session.query(Bracket).filter(
-                Bracket.id == movie_bracket_id).one()
+                Bracket.id == bracket_id).one()
             set_bracket.filled_out = True
             db.session.commit()
 
     # return redirect(f'/bracket/{new_movie.bracket_id}')
-    return redirect(f'/bracket/{movie_bracket_id}')
+    return redirect(f'/bracket/{bracket_id}')
 
 # Add another movie input on bracket page
 
@@ -117,10 +132,15 @@ def add_movies():
 @app.route('/bracket/<int:id>/add-movie', methods=['POST'])
 def add_movie_input(id):
     bracket_id = request.form['id']
-    # set_bracket = Bracket.query.get_or_404(id)
     set_bracket = db.session.query(Bracket).filter(
         Bracket.id == bracket_id).one()
+    set_db_index = len(set_bracket.pool) + 1
+    new_movie_title = request.form[f'movie{set_db_index}']
+    new_movie_votes = request.form[f'votes{set_db_index}']
     set_bracket.pool_size += 1
+    new_movie = Movie(title=new_movie_title, votes=new_movie_votes,
+                          bracket_id=bracket_id)
+    db.session.add(new_movie)
     db.session.commit()
     return redirect(f'/bracket/{bracket_id}')
 # view bracket
@@ -180,3 +200,6 @@ def update(id):
 # --------------RUN SERVER----------------------------------------------------------------------------
 if __name__ == "__main__":
     app.run(debug=True)
+
+#GRAVEYARD!!!!
+# {% for i in range(1, bracket.pool_size + 1) %} 
