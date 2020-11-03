@@ -21,14 +21,20 @@
 {% else %}
  <h2>No movies in the pool</h2>
 {% endif %}
-{% if bracket.filled_out == False  %}
+{% if bracket.pool|length > 0  %}
     <form action="/bracket/{{bracket.id}}/add-movie" method="post">
-        <label for="movie{{bracket.pool|length + 1}}">Movie {{bracket.pool|length + 1}} title:</label>
-        <input type="text" name="movie{{bracket.pool|length + 1}}" id="movie{{bracket.pool|length + 1}}">
-        <label for="votes{{bracket.pool|length + 1}}">How many votes for this movie?</label>
-        <input type="number" name="votes{{bracket.pool|length + 1}}" id="votes{{bracket.pool|length + 1}}" size="4" min="1">
-        <input type="hidden" name="id" id="id" value="{{bracket.id}}">
-        <input type="submit" value="Add another movie">
+        <div class="bracket-input-container">
+            <div class="input">
+                <label for="movie{{bracket.pool|length + 1}}">Movie {{bracket.pool|length + 1}} title:</label>
+                <input type="text" name="movie{{bracket.pool|length + 1}}" id="movie{{bracket.pool|length + 1}}">
+            </div>
+            <div class="input">
+                <label for="votes{{bracket.pool|length + 1}}">How many votes for this movie?</label>
+                <input type="number" name="votes{{bracket.pool|length + 1}}" id="votes{{bracket.pool|length + 1}}" size="4" min="1">
+            </div>
+            <input type="hidden" name="id" id="id" value="{{bracket.id}}">
+            <input type="submit" value="Add another movie" class="submit-button">
+        </div>
     </form>
 {% endif %}
 <!-- ==============END POOL DISPLAY===========================================================  -->
@@ -43,11 +49,15 @@
     {% endif %}
     <form action="/bracket/pool" method="post">
         {% for i in range(1, bracket.pool_size + 1) %}
-            <div style="border: 1px solid red; margin: 5px; width: 50%;">
-                <label for="movie{{i}}">Movie {{i}} title:</label>
-                <input type="text" name="movie{{i}}" id="movie{{i}}">
-                <label for="votes{{i}}">How many votes for this movie?</label>
-                <input type="number" name="votes{{i}}" id="votes{{i}}" size="4" min="1">
+            <div class="bracket-input-container">
+                <div class="input">
+                    <label for="movie{{i}}">Movie {{i}} title:</label>
+                    <input type="text" name="movie{{i}}" id="movie{{i}}">
+                </div>
+                <div class="input">
+                    <label for="votes{{i}}">How many votes for this movie?</label>
+                    <input type="number" name="votes{{i}}" id="votes{{i}}" size="4" min="1">
+                </div>
             </div>
         {% endfor %}
         <input type="hidden" name="id" id="id" value="{{bracket.id}}">
@@ -97,6 +107,7 @@
 <a href="/bracket/delete/{{ bracket.id }}" class="delete">Delete Bracket</a>
 <!-- ============== END BRACKET DISPLAY=========================================================== --> 
 <!-- ================================================================================== -->
+
 
 
 {% endblock %}

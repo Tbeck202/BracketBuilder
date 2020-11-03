@@ -117,3 +117,22 @@ a {
 	text-decoration: none;
 	align-self: center;
 }
+
+div.bracket-input-container {
+	display: flex;
+	flex-direction: row;
+	margin: 5px;
+	background-color: #f88484;
+	border-radius: 5px;
+	max-width: 60%;
+	justify-content: center;
+	align-content: center;
+}
+
+.input {
+	margin: 10px;
+}
+
+.hide {
+	display: none;
+}
