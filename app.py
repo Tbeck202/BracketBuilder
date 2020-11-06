@@ -35,6 +35,7 @@ class Movie(db.Model):
     votes = db.Column(db.Integer, nullable=False)
     in_bracket = db.Column(db.Boolean, default=False, nullable=False)
     bracket_order = db.Column(db.Integer, nullable=True)
+    current_round = db.Column(db.Integer, default=1, nullable=False)
     bracket_id = db.Column(db.Integer, db.ForeignKey('bracket.id'))
 
 
@@ -105,7 +106,8 @@ def set_bracket_order():
     for m in randomized_pool:
         print(m.title)
     cnt = 1
-    while cnt <= len(bracket.pool):
+    # while cnt <= len(bracket.pool):
+    while cnt <= bracket.size:
         idx = randint(0, len(randomized_pool)-1)
         pick = randomized_pool[idx]
         if pick.in_bracket:
@@ -187,7 +189,7 @@ def update(id):
     movie = Movie.query.get_or_404(id)
     if request.method == 'POST':
         movie.title = request.form['title']
-
+        
         try:
             db.session.commit()
             return redirect('/')
@@ -196,10 +198,24 @@ def update(id):
     else:
         return render_template('update.html', movie=movie)
 
+# Select movie to move to next round
+
+@app.route('/movie/<int:id>}/set-round', methods=['POST'])
+def move_to_next_rd(id):
+    movie = Movie.query.get_or_404(id)
+    movie.current_round += 1
+    bracket_id = request.form['bracket-id']
+
+    try:
+        db.session.commit()
+        return redirect(f'/bracket/{bracket_id}')
+    except:
+        return f"There was an error sending {movie.title} to the next round"
+
 
 # --------------RUN SERVER----------------------------------------------------------------------------
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
 
 #GRAVEYARD!!!!
 # {% for i in range(1, bracket.pool_size + 1) %} 

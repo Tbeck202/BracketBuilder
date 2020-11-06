@@ -82,23 +82,36 @@
 <!-- ==============BRACKET DISPLAY=========================================================== --> 
 {% if bracket.filled_out %}
 <div class="bracket-container">
-    {% for b in range(1, bracket.size) %}
-        {% if b % 2 != 0 %}
-        <div class="matchup-container">
-        {% for m in bracket.pool %}
-            {% if m.bracket_order == b %}
-            <span class="matchup-item">{{m.title}}</span>
+    <div class="round-container">
+        <span class="matchup-item">Round 1</span>
+        {% for b in range(1, bracket.size) %}
+            {% if b % 2 != 0 %}
+            <div class="matchup-container">
+            {% for m in bracket.pool %}
+                {% if m.bracket_order == b %}
+                <span class="matchup-item">{{m.title}}</span>
+                <form class="matchup-item" action="/movie/{{m.id}}/set-round" method="post">
+                    <input type="hidden" name="id" id="id" value="{{m.id}}">
+                    <input type="hidden" name="bracket-id" id="bracket-id" value="{{bracket.id}}">
+                    <input class="send-to-next-rd" type="submit" value="Send to next round">
+                </form>
+                {% endif %}
+            {% endfor %}
+                <span class="matchup-item">vs.</span>
+            {% for m in bracket.pool %}
+                {% if m.bracket_order == b + 1 %}
+                <span class="matchup-item">{{m.title}}</span>
+                <form class="matchup-item" action="/movie/{{m.id}}/set-round" method="post">
+                    <input type="hidden" name="id" id="id" value="{{m.id}}">
+                    <input type="hidden" name="bracket-id" id="bracket-id" value="{{bracket.id}}">
+                    <input class="send-to-next-rd" type="submit" value="Send to next round">
+                </form>
+                {% endif %}
+            {% endfor %}
+            </div>
             {% endif %}
         {% endfor %}
-            <span class="matchup-item">vs.</span>
-        {% for m in bracket.pool %}
-            {% if m.bracket_order == b + 1 %}
-            <span class="matchup-item">{{m.title}}</span>
-            {% endif %}
-        {% endfor %}
-        </div>
-        {% endif %}
-    {% endfor %}
+    </div>
 </div>
 {% else %}
         <h2>You gotta fill out yer bracket, dawg!</h2>
