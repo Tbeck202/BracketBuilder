@@ -21,8 +21,9 @@
 {% else %}
  <h2>No movies in the pool</h2>
 {% endif %}
-{% if bracket.pool|length > 0  %}
-    <form action="/bracket/{{bracket.id}}/add-movie" method="post">
+
+{% if bracket.pool|length > 0 and bracket.filled_out == False %}
+    <form class="form-container" action="/bracket/{{bracket.id}}/add-movie" method="post">
         <div class="bracket-input-container">
             <div class="input">
                 <label for="movie{{bracket.pool|length + 1}}">Movie {{bracket.pool|length + 1}} title:</label>

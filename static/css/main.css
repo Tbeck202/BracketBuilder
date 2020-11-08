@@ -120,6 +120,11 @@ input.send-to-next-rd {
 	cursor: pointer;
 }
 
+.form-container {
+	display: flex;
+	align-self: center;
+}
+
 form {
 	margin: 20px 0;
 }
