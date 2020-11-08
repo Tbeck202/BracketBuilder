@@ -15,7 +15,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///bracket_builder.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-# --------------MODELS----------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
+# --------------MODELS-----------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
 
 
 class Bracket(db.Model):
@@ -39,9 +41,15 @@ class Movie(db.Model):
     bracket_id = db.Column(db.Integer, db.ForeignKey('bracket.id'))
 
 
-# --------------ROUTES-----------------------------------------------------------------------------
 
-    # Index route / create bracket
+#--------------------------------------------------------------------------------------------------
+# --------------ROUTES-----------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
+
+# *************************************************************************************************
+# ***********BRACKET ROUTES************************************************************************
+
+# Index route / create bracket
 
 
 @app.route('/', methods=['POST', 'GET'])
@@ -145,16 +153,17 @@ def add_movie_input(id):
     db.session.add(new_movie)
     db.session.commit()
     return redirect(f'/bracket/{bracket_id}')
-# view bracket
 
+
+# view bracket
 
 @app.route('/bracket/<int:id>', methods=['GET'])
 def view_bracket(id):
     show_bracket = Bracket.query.get_or_404(id)
     return render_template('bracket.html', bracket=show_bracket)
 
-# Delete Bracket
 
+# Delete Bracket
 
 @app.route('/bracket/delete/<int:id>')
 def delete_bracket(id):
@@ -166,6 +175,10 @@ def delete_bracket(id):
         return redirect('/')
     except:
         return f"Sorry, we couldn't delete the {bracket_to_delete.theme} bracket"
+
+
+# *************************************************************************************************
+# ***********MOVIE ROUTES**************************************************************************
 
 # Deleting movies from the pool
 
@@ -200,7 +213,7 @@ def update(id):
 
 # Select movie to move to next round
 
-@app.route('/movie/<int:id>}/set-round', methods=['POST'])
+@app.route('/movie/<int:id>/set-round', methods=['POST'])
 def move_to_next_rd(id):
     movie = Movie.query.get_or_404(id)
     movie.current_round += 1
@@ -217,5 +230,3 @@ def move_to_next_rd(id):
 if __name__ == "__main__":
     app.run(debug=True)
 
-#GRAVEYARD!!!!
-# {% for i in range(1, bracket.pool_size + 1) %} 
