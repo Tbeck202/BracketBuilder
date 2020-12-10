@@ -5,13 +5,26 @@ from flask import Flask, render_template, request, url_for, redirect
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Table, Column, Integer, ForeignKey
 from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
+# from sqlalchemy.ext.declarative import declarative_base
 
-Base = declarative_base()
+# Base = declarative_base()
 
 # --------------INIT APP----------------------------------------------------------------------------
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///bracket_builder.db'
+
+ENV = 'dev'
+
+if ENV == 'dev':
+    app.debug = True
+    # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///bracket_builder.db'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:Dagron202@localhost/Bracket_Builder'
+
+else:
+    app.debug = False
+    app.config['SQLALCHEMY_DATABASE_URI'] = ''
+
+
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///bracket_builder.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -21,24 +34,47 @@ db = SQLAlchemy(app)
 
 
 class Bracket(db.Model):
+    # __tablename__ = 'bracket'
     id = db.Column(db.Integer, primary_key=True)
     theme = db.Column(db.String(500), nullable=False)
     size = db.Column(db.Integer, nullable=False)
     pool_size = db.Column(db.Integer, nullable=False)
+    current_round = db.Column(db.Integer, default=1, nullable=False)
     filled_out = show_bracket = db.Column(
         db.Boolean, default=False, nullable=False)
     show_bracket = db.Column(db.Boolean, default=False, nullable=False)
     pool = db.relationship("Movie", backref="bracket")
 
+    # def __init__(self, theme, size, pool_size, current_round, filled_out, show_bracket, pool):
+    #     self.theme = theme
+    #     self.size = size
+    #     self.pool_size = pool_size
+    #     self.current_round = current_round
+    #     self.filled_out = filled_out
+    #     self.show_bracket = show_bracket
+    #     self.pool = pool
+
+
 
 class Movie(db.Model):
+#     __tablename__ = 'movie'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
     votes = db.Column(db.Integer, nullable=False)
     in_bracket = db.Column(db.Boolean, default=False, nullable=False)
     bracket_order = db.Column(db.Integer, nullable=True)
+    # Probably don't need current_round_order
+    current_round_order = db.Column(db.Integer, nullable=True)
     current_round = db.Column(db.Integer, default=1, nullable=False)
     bracket_id = db.Column(db.Integer, db.ForeignKey('bracket.id'))
+
+    # def __init__(self, title, votes, in_bracket, bracket_order, current_round, bracket_id):
+    #     self.title = title
+    #     self.votes = votes
+    #     self.in_bracket = in_bracket
+    #     self.bracket_order = bracket_order
+    #     self.current_round = current_round
+    #     self.bracket_id = bracket_id
 
 
 
@@ -111,8 +147,9 @@ def set_bracket_order():
             randomized_pool.append(m)
 
     shuffle(randomized_pool)
-    for m in randomized_pool:
-        print(m.title)
+    # print(randomized_pool)
+    # for m in randomized_pool:
+    #     print(m.title)
     cnt = 1
     # while cnt <= len(bracket.pool):
     while cnt <= bracket.size:
@@ -134,6 +171,32 @@ def set_bracket_order():
             db.session.commit()
 
     # return redirect(f'/bracket/{new_movie.bracket_id}')
+    return redirect(f'/bracket/{bracket_id}')
+
+# toggle next round in bracket view
+@app.route('/bracket/set-round', methods=['POST'])
+def set_bracket_round():
+    bracket_id = request.form['id']
+    bracket = db.session.query(Bracket).filter(
+        Bracket.id == bracket_id).one()
+    bracket.current_round += 1
+    db.session.commit()
+    # next_rd_size = bracket.size // 2
+    # idx = 1
+    # set_rd_order = []
+    # for m in bracket.pool:
+    #     if m.current_round == bracket.current_round and m.bracket_order == idx:
+    #         set_movie = Movie.query.get_or_404(m.id)
+    #         set_rd_order.append(set_movie)
+    #         db.session.commit()
+    #         idx += 1
+    #     else:
+    #         continue
+    
+    # for m in set_rd_order:
+    #     print(m.title)
+
+
     return redirect(f'/bracket/{bracket_id}')
 
 # Add another movie input on bracket page
@@ -160,7 +223,8 @@ def add_movie_input(id):
 @app.route('/bracket/<int:id>', methods=['GET'])
 def view_bracket(id):
     show_bracket = Bracket.query.get_or_404(id)
-    return render_template('bracket.html', bracket=show_bracket)
+    all_brackets = Bracket.query.order_by(Bracket.id).all()
+    return render_template('bracket.html', bracket=show_bracket, brackets=all_brackets)
 
 
 # Delete Bracket
@@ -228,5 +292,5 @@ def move_to_next_rd(id):
 
 # --------------RUN SERVER----------------------------------------------------------------------------
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
 

@@ -6,30 +6,120 @@
 
 {% block body %}
 
-<a href="/">Home</a>
+<div class="page-container">
 
-<h1>{{bracket.theme}}</h1>
+    <nav class="header-container">
 
+        <div class="title-container">
+            <a href="/"><h1>Three&nbsp;Films&nbsp;and&nbsp;a&nbsp;Podcast:</h1></a>
+            <span>Bracket&nbsp;Builder</span>
+        </div>
+
+        {% if brackets|length >= 1 %}
+        <div class="dropdown">
+            <button class="dropbtn">Find a Bracket</button>
+            
+            <div class="dropdown-content">
+                {% for bracket in brackets if bracket.theme %}
+                <a class="dropdown-bracket-link" href="/bracket/{{ bracket.id }}">{{ bracket.theme }}</a>
+                {% endfor %}
+            </div>
+            
+        </div>
+        {% else %}
+        <h2>There are no brackets created yet!</h2>
+        {% endif %}
+
+    </nav>
+
+    <!-- ==================================================  -->
+    <!-- ==============BRACKET DISPLAY===================== --> 
+    {% if bracket.filled_out %}
+    <div class="section-container">
+        
+        <div class="matchups-container">
+            <h2>{{bracket.theme}}</h2>
+            
+            {% for b in range(1, bracket.size) %}
+                {% if b % 2 != 0  %}
+                <div class="matchup">
+    
+                    {% for m in bracket.pool %}
+                        {% if m.bracket_order == b %}
+                        <span class="matchup-item">{{m.title}}</span>
+                        {% endif %}
+                    {% endfor %}
+    
+                    <span class="matchup-item">vs.</span>
+    
+                    {% for m in bracket.pool %}
+                        {% if m.bracket_order == b + 1 %}
+                        <span class="matchup-item">{{m.title}}</span>
+                        {% endif %}
+                    {% endfor %}
+    
+                </div>
+                {% endif %}
+            {% endfor %}
+    
+            {% if bracket.current_round == 1 %}
+                {% for i in bracket.pool if i.current_round == 2 %}
+                    {% if loop.index == bracket.size // 2 %}
+                    <form class="matchup-item" action="/bracket/set-round" method="post">
+                        <input type="hidden" name="id" id="id" value="{{bracket.id}}">
+                        <!-- <input type="hidden" name="bracket-id" id="bracket-id" value="{{bracket.id}}"> -->
+                        <input class="send-to-next-rd" type="submit" value="Begin next round">
+                    </form>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+    
+        </div>
+    </div>
+
+    <div class="section-container">
+        <a href="/bracket/delete/{{ bracket.id }}" class="delete">Delete Bracket</a>
+    </div>
+    {% else %}
+    <div class="section-container">
+        <h2>You gotta fill out yer bracket, dawg!</h2>
+    </div>
+    {% endif %}
+    
+    
+
+<!-- ============== END BRACKET DISPLAY================= --> 
+<!-- =================================================== -->
+    
 <!-- =================================================  -->
 <!-- ==============POOL DISPLAY=======================  -->                                                                                     
-{% if bracket.pool|length >= 1  %}
-    <div class="movie-pool">
+    {% if bracket.pool|length >= 1  %}
+    <div class="movie-pool-container">
         {% for m in bracket.pool %}
-            <span class="pool-item"><a href="/update/{{m.id}}"><span class="pool-item-title">{{ m.title}}</span></a> has <span class="pool-item-votes">{{m.votes}}</span> votes</span class="pool-item">
+        <span class="pool-item">
+            <a href="/update/{{m.id}}">
+                <span class="pool-item-title">{{ m.title}}</span>
+            </a> 
+            <span class="pool-item-has-votes">has</span> 
+            <span class="pool-item-votes">{{m.votes}}</span>
+            {% if m.votes > 1 %} 
+            <span class="pool-item-has-votes">votes</span>
+            {% else %}
+            <span class="pool-item-has-votes">vote</span>
+            {% endif%}
+        </span>
         {% endfor %}
     </div>
-{% else %}
- <h2>No movies in the pool</h2>
-{% endif %}
-
-{% if bracket.pool|length > 0 and bracket.filled_out == False %}
+    {% endif %}
+    
+    {% if bracket.pool|length > 0 and bracket.filled_out == False %}
     <form class="form-container" action="/bracket/{{bracket.id}}/add-movie" method="post">
         <div class="bracket-input-container">
-            <div class="input">
+            <div class="bracket-input">
                 <label for="movie{{bracket.pool|length + 1}}">Movie {{bracket.pool|length + 1}} title:</label>
                 <input type="text" name="movie{{bracket.pool|length + 1}}" id="movie{{bracket.pool|length + 1}}">
             </div>
-            <div class="input">
+            <div class="bracket-input">
                 <label for="votes{{bracket.pool|length + 1}}">How many votes for this movie?</label>
                 <input type="number" name="votes{{bracket.pool|length + 1}}" id="votes{{bracket.pool|length + 1}}" size="4" min="1">
             </div>
@@ -37,100 +127,52 @@
             <input type="submit" value="Add another movie" class="submit-button">
         </div>
     </form>
-{% endif %}
+    {% endif %}
 <!-- ==============END POOL DISPLAY===================  -->
 <!-- =================================================  -->
 
 
 <!-- =================================================  -->
 <!-- ==============BRACKET FORM (Movie inputs)========  -->
-{% if bracket.pool|length == 0 %}
-    {% if bracket.pool_size - bracket.pool|length > 0 %}
-        <h2>Add {{ bracket.pool_size - bracket.pool|length }} movies to the pool</h2>
-    {% endif %}
-    <form action="/bracket/pool" method="post">
-        {% for i in range(1, bracket.pool_size + 1) %}
-            <div class="bracket-input-container">
-                <div class="input">
-                    <label for="movie{{i}}">Movie {{i}} title:</label>
-                    <input type="text" name="movie{{i}}" id="movie{{i}}">
-                </div>
-                <div class="input">
-                    <label for="votes{{i}}">How many votes for this movie?</label>
-                    <input type="number" name="votes{{i}}" id="votes{{i}}" size="4" min="1">
-                </div>
+    {% if bracket.pool|length == 0 %}
+        {# if bracket.pool_size - bracket.pool|length > 0 #}
+            <!-- <h2>Add {# bracket.pool_size - bracket.pool|length #} movies to the pool</h2> -->
+        {# endif #}
+        <form id="bracket-form" class="form-container" action="/bracket/pool" method="post">
+            <div class="bracket-all-inputs-container">
+                {% for i in range(1, bracket.pool_size + 1) %}
+                    <div class="bracket-input-container">
+                        <div class="bracket-input">
+                            <label for="movie{{i}}">Movie {{i}} title:</label>
+                            <input type="text" name="movie{{i}}" id="movie{{i}}">
+                        </div>
+                        <div class="bracket-input">
+                            <label for="votes{{i}}">How many votes for this movie?</label>
+                            <input type="number" name="votes{{i}}" id="votes{{i}}" size="4" min="1">
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
-        {% endfor %}
-        <input type="hidden" name="id" id="id" value="{{bracket.id}}">
-        <input type="hidden" name="size" id="size" value="{{bracket.size}}">
-        <input type="hidden" name="pool_size" id="pool_size" value="{{bracket.pool_size}}">
-        <input type="submit" value="Submit">
-    </form>
-{% endif %}
-{% if bracket.filled_out == False %}
-    <form action="/bracket/set-bracket" method="post">
-        <input type="hidden" name="id" id="id" value="{{bracket.id}}">
-        <input type="submit" value="Fill out the bracket!">
-    </form>
-{% endif %}
-
-
+            <input type="hidden" name="id" id="id" value="{{bracket.id}}">
+            <input type="hidden" name="size" id="size" value="{{bracket.size}}">
+            <input type="hidden" name="pool_size" id="pool_size" value="{{bracket.pool_size}}">
+            <input class="submit button" type="submit" value="Submit Movies">
+        </form>
+    {% endif %}
+    {% if bracket.filled_out == False and bracket.pool|length != 0 %}
+        <form action="/bracket/set-bracket" method="post">
+            <input type="hidden" name="id" id="id" value="{{bracket.id}}">
+            <input type="submit" value="Fill out the bracket!">
+        </form>
+    {% endif %}
+    
+    
 <!-- ==============END BRACKET FORM ===================  -->
 <!-- ==================================================  -->
-
-
-<!-- ==================================================  -->
-<!-- ==============BRACKET DISPLAY===================== --> 
-{% if bracket.filled_out %}
-<div class="bracket-container">
-    <div class="round-container">
-        <span class="matchup-item">Round 1</span>
-        {% for b in range(1, bracket.size) %}
-            {% if b % 2 != 0 %}
-            <div class="matchup-container">
-            {% for m in bracket.pool %}
-                {% if m.bracket_order == b %}
-                <span class="matchup-item">{{m.title}}</span>
-                <form class="matchup-item" action="/movie/{{m.id}}/set-round" method="post">
-                    <input type="hidden" name="id" id="id" value="{{m.id}}">
-                    <input type="hidden" name="bracket-id" id="bracket-id" value="{{bracket.id}}">
-                    <input class="send-to-next-rd" type="submit" value="Send to next round">
-                </form>
-                {% endif %}
-            {% endfor %}
-                <span class="matchup-item">vs.</span>
-            {% for m in bracket.pool %}
-                {% if m.bracket_order == b + 1 %}
-                <span class="matchup-item">{{m.title}}</span>
-                <form class="matchup-item" action="/movie/{{m.id}}/set-round" method="post">
-                    <input type="hidden" name="id" id="id" value="{{m.id}}">
-                    <input type="hidden" name="bracket-id" id="bracket-id" value="{{bracket.id}}">
-                    <input class="send-to-next-rd" type="submit" value="Send to next round">
-                </form>
-                {% endif %}
-            {% endfor %}
-            </div>
-            {% endif %}
-        {% endfor %}
-    </div>
-    <div class="round-container">
-    {% for m in bracket.pool %}
     
-        {% if m.current_round == 2 %}
-        <span class="matchup-item">{{m.title}}</span>
-        {% endif %}
     
-    {% endfor %}
-    </div>
+    
 </div>
-{% else %}
-        <h2>You gotta fill out yer bracket, dawg!</h2>
-{% endif %}
-
-<a href="/bracket/delete/{{ bracket.id }}" class="delete">Delete Bracket</a>
-<!-- ============== END BRACKET DISPLAY================= --> 
-<!-- =================================================== -->
-
 
 
 {% endblock %}
