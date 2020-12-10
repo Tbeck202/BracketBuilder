@@ -5,38 +5,59 @@
 {% endblock %}
 
 {% block body %}
-<h1>Three Films and a Podcast: Bracket Builder</h1>
-{% if brackets|length >= 1 %}
-<ul>
-    {% for bracket in brackets if bracket.theme %}
-    <li><a href="/bracket/{{ bracket.id }}">{{ bracket.theme }}</a></li>
-    {% endfor %}
-</ul>
-{% else %}
-<h2>There are no brackets created yet!</h2>
-{% endif %}
-<!-- <div class="movie-pool"> -->
 
-<h2>Create a bracket!</h2>
+<div class="page-container">
+
+    <nav class="header-container">
+
+        <div class="title-container">
+            <a href="/"><h1>Three&nbsp;Films&nbsp;and&nbsp;a&nbsp;Podcast:</h1></a>
+            <span>Bracket&nbsp;Builder</span>
+        </div>
+
+        {% if brackets|length >= 1 %}
+        <div class="dropdown">
+            <button class="dropbtn">Find a Bracket</button>
+            
+            <div class="dropdown-content">
+                {% for bracket in brackets if bracket.theme %}
+                <a class="dropdown-bracket-link" href="/bracket/{{ bracket.id }}">{{ bracket.theme }}</a>
+                {% endfor %}
+            </div>
+            
+        </div>
+        {% else %}
+        <h2>There are no brackets created yet!</h2>
+        {% endif %}
+
+    </nav>
     
-<div class="form-container">
-    <form action="/" method="post">
-        <div  style="border: 1px solid black; margin: 5px; width: 50%;">
-            <label for="theme">Bracket Theme</label>
-            <input type="text" name="theme" id="theme">
+    <div class="section-container">
+        <h2>Create a Bracket!</h2>
+            
+        <div class="form-container">
+            <form class="index-form" action="/" method="post">
+                <div>
+                    <label for="theme">Bracket Theme</label>
+                    <input type="text" name="theme" id="theme">
+                </div>
+                <div>
+                    <label for="size">Bracket Size</label>
+                    <input type="number" name="size" id="size" step="4" min="4">
+                </div>
+                <div>
+                    <label for="">Pool Size</label>
+                    <input type="number" name="pool_size" id="pool_size" step="1" min="1">
+                </div>
+                <input class="button" type="submit" value="Create Bracket">
+            </form>
         </div>
-        <div style="border: 1px solid black; margin: 5px; width: 50%;">
-            <label for="size">How big is the bracket?</label>
-            <input type="number" name="size" id="size" step="4" min="4">
-        </div>
-        <div style="border: 1px solid black; margin: 5px; width: 50%;">
-            <label for="">How many movies in the pool?</label>
-            <input type="number" name="pool_size" id="pool_size" step="1" min="1">
-        </div>
-        <input type="submit" value="Create Bracket">
-    </form>
-</div>
-{% endblock %}
+    </div>
+
+</div> 
+    {% endblock %}
+
+   
 
 <!-- {% if movies|length < 1 %}
         <h2>There are no movies enetered.</h2>
