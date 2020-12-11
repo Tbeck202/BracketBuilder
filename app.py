@@ -18,11 +18,11 @@ ENV = 'prod'
 if ENV == 'dev':
     app.debug = True
     # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///bracket_builder.db'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:Dagron202@localhost/Bracket_Builder'
+    app.config['SQLALCHEMY_DATABASE_URI'] = ''
 
 else:
     app.debug = False
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://butqhiarkrejrm:d5d4ece4cb551faae4c3eeb38d968990de22627f4af0234265bd2b896208b710@ec2-3-218-123-191.compute-1.amazonaws.com:5432/d78a49mdh67i4r'
+    app.config['SQLALCHEMY_DATABASE_URI'] = ''
 
 
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///bracket_builder.db'
