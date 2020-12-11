@@ -74,6 +74,29 @@ a:visited {
 	box-shadow: 0 .5px 2px #18628c;
 	outline: none;
 }
+.blue-btn {
+	background-color: #b5e1f4;
+	border: 2px solid #18628c;
+}
+.bracket-input-container > .blue-btn {
+	display: flex;
+	justify-self: center;
+	align-self: center;
+	margin: 0 auto 15px;
+}
+form > .blue-btn {
+	padding: 10px 100px;
+}
+.hide {
+	display: none;
+}
+
+#add-movie-btn {
+	display: flex;
+	justify-content: center;
+	align-self: center;
+	width: 20%;
+}
 
 @media only screen and (max-width: 600px) {
 	.section-container {

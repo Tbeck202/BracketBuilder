@@ -113,7 +113,10 @@
     {% endif %}
     
     {% if bracket.pool|length > 0 and bracket.filled_out == False %}
-    <form class="form-container" action="/bracket/{{bracket.id}}/add-movie" method="post">
+    <div class="section-container">
+        <button id="add-movie-btn" class="submit button blue-btn">Need to add a movie?</button>
+    </div>
+    <form id="add-a-movie" class="form-container hide" action="/bracket/{{bracket.id}}/add-movie" method="post">
         <div class="bracket-input-container">
             <div class="bracket-input">
                 <label for="movie{{bracket.pool|length + 1}}">Movie {{bracket.pool|length + 1}} title:</label>
@@ -123,8 +126,9 @@
                 <label for="votes{{bracket.pool|length + 1}}">How many votes for this movie?</label>
                 <input type="number" name="votes{{bracket.pool|length + 1}}" id="votes{{bracket.pool|length + 1}}" size="4" min="1">
             </div>
+            
             <input type="hidden" name="id" id="id" value="{{bracket.id}}">
-            <input type="submit" value="Add another movie" class="submit-button">
+            <input type="submit" value="Add it!" class="submit button blue-btn">
         </div>
     </form>
     {% endif %}
@@ -160,9 +164,9 @@
         </form>
     {% endif %}
     {% if bracket.filled_out == False and bracket.pool|length != 0 %}
-        <form action="/bracket/set-bracket" method="post">
+        <form class="form-container" action="/bracket/set-bracket" method="post">
             <input type="hidden" name="id" id="id" value="{{bracket.id}}">
-            <input type="submit" value="Fill out the bracket!">
+            <input class="submit button blue-btn" type="submit" value="Fill out the bracket!">
         </form>
     {% endif %}
     
@@ -174,5 +178,13 @@
     
 </div>
 
+<script>
+    let addMovieButton = document.getElementById("add-movie-btn");
+    let addMovie = document.getElementById("add-a-movie");
+
+    addMovieButton.addEventListener('click', function(){
+        addMovie.classList.toggle('hide');
+    })
+</script>
 
 {% endblock %}
