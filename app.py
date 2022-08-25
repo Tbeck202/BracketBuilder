@@ -291,7 +291,7 @@ def move_to_next_rd(id):
         return f"There was an error sending {movie.title} to the next round"
 
 
-# --------------RUN SERVER----------------------------------------------------------------------------
+# --------------RUN SERVER---------------------------------------------------------------------
 if __name__ == "__main__":
     app.run()
 
