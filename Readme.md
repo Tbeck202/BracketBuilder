@@ -25,9 +25,3 @@ Once you navigate to a bracket show page, *if* there are movies in the pool ther
 * The number of votes is essentially a multiplier making that specific movie more likely to end up in the bracket. This will make more sense when we talk about how the bracket gets filled out.
 3. Once all the info is entered, hit submit to enter the movies into the pool and launch the script.
 * At some point, I'm gonna refactor this so it only enters the movies into the pool and there will be a seperate button to run the bracket builder script.
-
-### How the script works
-
-and *if* the bracket has been created, there will be a display of the bracket and all the matchups. If the bracket *is not* filled out, 
-
-
